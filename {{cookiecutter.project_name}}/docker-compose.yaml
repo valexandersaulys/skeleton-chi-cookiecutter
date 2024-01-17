@@ -1,0 +1,16 @@
+services:
+  app:
+    image: skeleton-chi:local   # COOKIECUTTER
+    build: .
+    entrypoint: sh -c "/usr/bin/output.bin --log-level=INFO --log-path=/var/logs/output.logs --port=2998"
+    ports:
+      - 3002:2998
+    environment:
+      - CSRF_PROTECTION_KEY=56789
+      - RUNTIME_ENV=LOCAL
+      - ADD_DUMMIES=true
+    volumes:
+      - /tmp/chi.docker.logs:/var/logs
+
+# networks:
+#   my-network: 

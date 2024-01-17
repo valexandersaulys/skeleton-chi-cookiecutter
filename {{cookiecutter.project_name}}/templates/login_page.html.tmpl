@@ -1,0 +1,21 @@
+{{define "body"}}
+    <h1>
+      Login
+    </h1>
+    <div>
+      {{if .FlashedError}}
+      <div style="color:red;">{{.FlashedError}}</div>
+      {{end}}
+    </div>
+    <div>
+      <form method="POST">
+        <div>
+          <input name="gorilla.csrf.Token" type="hidden" value="{{.CsrfToken}}"/>
+          <input name="email" type="email" value="" placeholder="Email" autofocus/>
+          <br/>
+          <input name="password" type="password" value="" placeholder="Password"/>
+        </div>
+        <input name="Submit" type="submit" value="submit"/>
+      </form>
+    </div>
+{{end}}

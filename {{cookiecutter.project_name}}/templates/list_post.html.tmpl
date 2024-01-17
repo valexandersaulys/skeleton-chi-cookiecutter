@@ -1,0 +1,22 @@
+{{define "body"}}
+<h1>Your Posts</h1>
+<div>
+  <a href="/posts/new">Create New Post</a>
+</div>
+<hr/>
+{{if .FlashedInfo}}
+<h3 style="color:green">
+  {{.FlashedInfo}}
+</h3>
+<hr/>
+{{end}}
+<div>
+  {{range .Posts}}
+  <a href="/posts/{{.Uuid}}">
+    <h2>
+      {{.Title}}
+    </h2>
+  </a>
+  {{end}}
+</div>
+{{end}}

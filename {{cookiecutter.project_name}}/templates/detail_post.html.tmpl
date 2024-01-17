@@ -1,0 +1,16 @@
+{{define "body"}}
+    <h1>
+      {{.Post.Title}}
+    </h1>
+    <hr/>
+    <div>
+      {{.Post.Author.Name}}
+    </div>
+    <div>
+      {{.Post.Content}}
+    </div>
+    <hr/>
+    <div>
+      <a href="/posts/{{.Post.Uuid}}/edit">Edit this Page</a>
+    </div>
+{{end}}

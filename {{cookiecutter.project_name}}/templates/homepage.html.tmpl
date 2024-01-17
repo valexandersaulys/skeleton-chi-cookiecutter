@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8"/>
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Hello World!</h1>
+    <div>
+      <h3>Subheader</h3>
+      <h3>{{.Foo}}</h3>
+      <h3>{{.Val}}</h3>
+      <!-- Below will not print as it begins lowercase -->
+      <h3>{{.placeholder}}</h3>
+      <!-- -->
+    </div>
+    <div>
+      {{range .Posts}}
+      <h2>
+        {{.Title}}
+      </h2>
+      {{end}}
+    </div>
+  </body>
+</html>

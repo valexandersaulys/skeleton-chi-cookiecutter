@@ -1,0 +1,36 @@
+{{define "body"}}
+    <h1>
+      Your New Post
+    </h1>
+    {{if .FlashedError}}
+    <div style="color:red;">{{.FlashedError}}</div>
+    {{end}}
+    <div>
+      <form method="POST">
+        <input name="gorilla.csrf.Token" type="hidden" value="{{.CsrfToken}}"/>
+        <div>
+          <label for="title">
+            Post Title
+          </label>
+          <input name="title" type="text" value=""/>
+        </div>
+
+        <div>
+          <label for="content">
+            Post Content
+          </label>
+          <textarea name="content" cols="30" id="" rows="10"></textarea>
+        </div>
+
+        <div>
+          <label for="is_public">Show to Public?</label>
+          <input name="is_public"
+                 type="checkbox"
+                 value="true"
+                 />
+        </div>
+
+        <input name="Submit" type="submit" value="submit"/>
+      </form>
+    </div>
+{{end}}
