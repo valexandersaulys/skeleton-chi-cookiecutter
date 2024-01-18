@@ -14,9 +14,8 @@ ENV CGO_CFLAGS="-D_LARGEFILE64_SOURCE"
 COPY . /src
 RUN make build
 
-# COOKIECUTTER: replace with Makefile name
 FROM alpine:latest AS runtime
-COPY --from=builder /src/_build/output.bin /usr/bin/output.bin
+COPY --from=builder /src/_build/{{cookiecutter.application_name}}.bin /usr/bin/{{cookiecutter.application_name}}.bin
 
 # Runtime environmental values -- these don't affect build
 ENV CSRF_PROTECTION_KEY="1234"

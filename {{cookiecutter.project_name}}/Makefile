@@ -1,8 +1,8 @@
-EXECUTABLE_NAME = "output"  # COOKIECUTTER
-BUILD_DIR = "_build"  # COOKIECUTTER
+EXECUTABLE_NAME = "{{cookiecutter.application_name}}" 
+BUILD_DIR = "_build" 
 
 run:
-# create test user, can make redundant data --  ADD_DUMMIES=1 
+# create test user, can cause redundant data --  ADD_DUMMIES=1 
 	COOKIE_STORE_AUTH_KEY=COOKIE_STORE_AUTH_KEY COOKIE_STORE_ENCRYPT_KEY=123456781234567812345678 RUNTIME_ENV=LOCAL CSRF_PROTECTION_KEY=1234 go run . --log-level=TRACE --port=2999
 
 build:

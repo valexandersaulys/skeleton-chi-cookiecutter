@@ -1,4 +1,4 @@
-module {{cookiecutter.project_name}}   #  COOKIECUTTER
+module {{cookiecutter.project_name}} 
 
 go 1.21.4
 

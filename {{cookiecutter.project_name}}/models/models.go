@@ -1,27 +1,26 @@
 package models
 
 import (
-	"{{cookiecutter.project_name}}/config"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"{{cookiecutter.project_name}}/config"
 )
 
 var Db *gorm.DB
 
 func RunInit() {
-	// COOKIECUTTER: replace these with more sensible names
 	var sqlDb gorm.Dialector
 	switch *config.Environment {
 	case "TESTING":
 		sqlDb = sqlite.Open("file::memory:?cache=shared")
 	case "LOCAL":
-		sqlDb = sqlite.Open("/tmp/chi.db")
+		sqlDb = sqlite.Open("/tmp/{{cookiecutter.application_name}}i.db")
 	case "DEV":
-		sqlDb = sqlite.Open("/tmp/chi.db")
+		sqlDb = sqlite.Open("/tmp/{{cookiecutter.application_name}}i.db")
 	case "PROD":
-		sqlDb = sqlite.Open("/tmp/chi.db")
+		sqlDb = sqlite.Open("/tmp/{{cookiecutter.application_name}}i.db")
 	default:
-		sqlDb = sqlite.Open("/tmp/chi.db")
+		sqlDb = sqlite.Open("/tmp/{{cookiecutter.application_name}}i.db")
 	}
 
 	var err error

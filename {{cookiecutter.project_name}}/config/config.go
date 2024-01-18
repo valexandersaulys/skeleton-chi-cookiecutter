@@ -14,9 +14,7 @@ import (
 // Flagged variables
 var LogLevel = flag.String("log-level", "INFO",
 	"Specify the log level at runtime, can be TRACE, DEBUG, INFO, WARN, or ERROR. Defaults to INFO.")
-
-// COOKIECUTTER: replace log default names
-var LogPath = flag.String("log-path", "/tmp/chi.logs", "Specify the path for (most) logs")
+var LogPath = flag.String("log-path", "/tmp/{{cookiecutter.application_name}}.logs", "Specify the path for (most) logs")
 var PrintRoutes = flag.Bool("routes", false, "Generate router documentation")
 var RunMigrations = flag.Bool("migrate", true, "Whether to run model migrations")
 var RuntimePort = flag.Int("port", 3000, "Specify the runtime port to run on")

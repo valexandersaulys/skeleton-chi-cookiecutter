@@ -1,6 +1,6 @@
 services:
   app:
-    image: skeleton-chi:local   # COOKIECUTTER
+    image: {{cookiecutter.application_name}}:local
     build: .
     entrypoint: sh -c "/usr/bin/output.bin --log-level=INFO --log-path=/var/logs/output.logs --port=2998"
     ports:
