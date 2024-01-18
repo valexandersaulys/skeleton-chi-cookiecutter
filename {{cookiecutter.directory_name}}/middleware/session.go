@@ -2,12 +2,10 @@ package middleware
 
 import (
 	"encoding/gob"
+	sessions "github.com/gorilla/sessions"
 	"{{cookiecutter.project_name}}/config"
 	"{{cookiecutter.project_name}}/models"
-	"fmt"
-	sessions "github.com/gorilla/sessions"
 	// "github.com/quasoft/memstore"
-	log "github.com/sirupsen/logrus"
 )
 
 var Store sessions.Store

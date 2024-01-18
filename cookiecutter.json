@@ -1,5 +1,8 @@
 {
   "directory_name": "chi-blog",
-  "application_name": "chi-blog",
-  "project_name": "github.com/valexandersaulys/chi-blog"
+  "application_name": "chiblog",
+  "project_name": "github.com/valexandersaulys/chi-blog",
+  "_copy_without_render": [
+    "*tmpl"
+  ]
 }

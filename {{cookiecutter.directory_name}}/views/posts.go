@@ -1,15 +1,15 @@
 package views
 
 import (
-	"{{cookiecutter.project_name}}/middleware"
-	"{{cookiecutter.project_name}}/models"
-	"{{cookiecutter.project_name}}/services"
-	tmpl "{{cookiecutter.project_name}}/templates"
 	"github.com/go-chi/chi/v5"
 	"github.com/gorilla/csrf"
 	log "github.com/sirupsen/logrus"
 	"html/template"
 	"net/http"
+	"{{cookiecutter.project_name}}/middleware"
+	"{{cookiecutter.project_name}}/models"
+	"{{cookiecutter.project_name}}/services"
+	tmpl "{{cookiecutter.project_name}}/templates"
 )
 
 func getPostRoute(w http.ResponseWriter, r *http.Request) {
@@ -48,9 +48,11 @@ func getPostRoute(w http.ResponseWriter, r *http.Request) {
 	_template.Execute(w, &struct {
 		Posts       *[]models.Post
 		FlashedInfo []interface{}
+		User        *models.User
 	}{
 		Posts:       allPosts,
 		FlashedInfo: infoFlashes,
+		User:        user,
 	})
 }
 

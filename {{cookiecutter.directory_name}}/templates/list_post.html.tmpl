@@ -1,8 +1,10 @@
 {{define "body"}}
 <h1>Your Posts</h1>
+{{if .User}}
 <div>
   <a href="/posts/new">Create New Post</a>
 </div>
+{{end}}
 <hr/>
 {{if .FlashedInfo}}
 <h3 style="color:green">

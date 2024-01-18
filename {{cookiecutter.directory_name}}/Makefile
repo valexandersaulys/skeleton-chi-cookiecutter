@@ -1,4 +1,4 @@
-EXECUTABLE_NAME = "{{cookiecutter.application_name}}" 
+EXECUTABLE_NAME = "{{cookiecutter.application_name}}"
 BUILD_DIR = "_build" 
 
 run:

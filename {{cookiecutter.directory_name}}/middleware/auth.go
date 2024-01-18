@@ -4,7 +4,10 @@ import (
 	// "github.com/go-chi/chi/v5/middleware"
 	// "{{cookiecutter.project_name}}/config"
 	"fmt"
+	sessions "github.com/gorilla/sessions"
+	log "github.com/sirupsen/logrus"
 	"net/http"
+	"{{cookiecutter.project_name}}/models"
 )
 
 func AuthRequired(next http.Handler) http.Handler {

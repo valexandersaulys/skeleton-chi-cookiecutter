@@ -14,13 +14,13 @@ func RunInit() {
 	case "TESTING":
 		sqlDb = sqlite.Open("file::memory:?cache=shared")
 	case "LOCAL":
-		sqlDb = sqlite.Open("/tmp/{{cookiecutter.application_name}}i.db")
+		sqlDb = sqlite.Open("/tmp/{{cookiecutter.application_name}}.db")
 	case "DEV":
-		sqlDb = sqlite.Open("/tmp/{{cookiecutter.application_name}}i.db")
+		sqlDb = sqlite.Open("/tmp/{{cookiecutter.application_name}}.db")
 	case "PROD":
-		sqlDb = sqlite.Open("/tmp/{{cookiecutter.application_name}}i.db")
+		sqlDb = sqlite.Open("/tmp/{{cookiecutter.application_name}}.db")
 	default:
-		sqlDb = sqlite.Open("/tmp/{{cookiecutter.application_name}}i.db")
+		sqlDb = sqlite.Open("/tmp/{{cookiecutter.application_name}}.db")
 	}
 
 	var err error
