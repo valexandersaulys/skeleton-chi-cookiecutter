@@ -3,8 +3,8 @@ package app
 import (
 	"github.com/go-chi/chi/v5"
 	// "github.com/go-chi/chi/v5/middleware"
-	"example/skeleton/config"
-	"example/skeleton/middleware"
+	"{{cookiecutter.project_name}}/config"
+	"{{cookiecutter.project_name}}/middleware"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"

@@ -1,7 +1,7 @@
 package views
 
 import (
-	"example/skeleton/middleware"
+	"{{cookiecutter.project_name}}/middleware"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 )

@@ -1,10 +1,10 @@
 package views
 
 import (
-	"example/skeleton/middleware"
-	"example/skeleton/models"
-	"example/skeleton/services"
-	tmpl "example/skeleton/templates"
+	"{{cookiecutter.project_name}}/middleware"
+	"{{cookiecutter.project_name}}/models"
+	"{{cookiecutter.project_name}}/services"
+	tmpl "{{cookiecutter.project_name}}/templates"
 	"github.com/go-chi/chi/v5"
 	"github.com/gorilla/csrf"
 	log "github.com/sirupsen/logrus"

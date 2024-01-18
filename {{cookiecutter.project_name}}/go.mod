@@ -1,4 +1,4 @@
-module example/skeleton   #  COOKIECUTTER
+module {{cookiecutter.project_name}}   #  COOKIECUTTER
 
 go 1.21.4
 

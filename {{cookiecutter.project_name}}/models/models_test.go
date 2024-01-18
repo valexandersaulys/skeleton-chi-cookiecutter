@@ -1,7 +1,7 @@
 package models
 
 import (
-	"example/skeleton/config"
+	"{{cookiecutter.project_name}}/config"
 	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"

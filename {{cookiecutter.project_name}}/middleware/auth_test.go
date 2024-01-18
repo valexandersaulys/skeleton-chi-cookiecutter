@@ -1,9 +1,9 @@
 package middleware
 
 import (
-	"example/skeleton/config"
-	"example/skeleton/models"
-	"example/skeleton/services"
+	"{{cookiecutter.project_name}}/config"
+	"{{cookiecutter.project_name}}/models"
+	"{{cookiecutter.project_name}}/services"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"

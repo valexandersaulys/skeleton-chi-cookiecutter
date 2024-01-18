@@ -1,8 +1,8 @@
 package views
 
 import (
-	"example/skeleton/config"
-	"example/skeleton/middleware"
+	"{{cookiecutter.project_name}}/config"
+	"{{cookiecutter.project_name}}/middleware"
 	"github.com/go-chi/chi/v5"
 	"github.com/stretchr/testify/assert"
 	"net/http"

@@ -1,7 +1,7 @@
 package services
 
 import (
-	"example/skeleton/config"
+	"{{cookiecutter.project_name}}/config"
 	"os"
 	"testing"
 )

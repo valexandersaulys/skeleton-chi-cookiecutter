@@ -1,10 +1,10 @@
 package main
 
 import (
-	"example/skeleton/app"
-	"example/skeleton/config"
-	"example/skeleton/middleware"
-	"example/skeleton/models"
+	"{{cookiecutter.project_name}}/app"
+	"{{cookiecutter.project_name}}/config"
+	"{{cookiecutter.project_name}}/middleware"
+	"{{cookiecutter.project_name}}/models"
 	"fmt"
 	"github.com/go-chi/docgen"
 	"net/http"

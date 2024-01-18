@@ -1,7 +1,7 @@
 package models
 
 import (
-	"example/skeleton/config"
+	"{{cookiecutter.project_name}}/config"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -46,7 +46,7 @@ func ClearAll() {
 func CreateDummyPosts() []*Post {
 	user := &User{
 		Name:     "Vincent",
-		Email:    "vincent@saulys.me",
+		Email:    "vincent@example.com",
 		Password: "password",
 	}
 	Db.Create(user)

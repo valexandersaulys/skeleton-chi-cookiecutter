@@ -1,7 +1,7 @@
 package services
 
 import (
-	"example/skeleton/models"
+	"{{cookiecutter.project_name}}/models"
 	"github.com/stretchr/testify/assert"
 	// "sort"
 	"fmt"
@@ -70,7 +70,7 @@ func TestCreateNewPost(t *testing.T) {
 
 	user := &models.User{
 		Name:     "Vincent",
-		Email:    "vincent@saulys.me",
+		Email:    "vincent@example.com",
 		Password: "password",
 	}
 	models.Db.Create(user)

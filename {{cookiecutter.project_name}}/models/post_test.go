@@ -8,7 +8,7 @@ import (
 func TestPostCreationAndRetrieval(t *testing.T) {
 	user := &User{
 		Name:     "Vincent",
-		Email:    "vincent@saulys.me",
+		Email:    "vincent@example.com",
 		Password: "password",
 	}
 	Db.Create(user)

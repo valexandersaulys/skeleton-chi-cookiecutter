@@ -1,8 +1,8 @@
 package views
 
 import (
-	"example/skeleton/middleware"
-	"example/skeleton/models"
+	"{{cookiecutter.project_name}}/middleware"
+	"{{cookiecutter.project_name}}/models"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/stretchr/testify/assert"
 	"net/http"
@@ -34,7 +34,7 @@ func TestLoginUserRoute(t *testing.T) {
 		http.MethodPost,
 		"/login",
 		convert_to_post(map[string]string{
-			"email":    "vincent@saulys.me",
+			"email":    "vincent@example.com",
 			"password": "password",
 		}))
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")

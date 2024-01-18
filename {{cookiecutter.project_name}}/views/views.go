@@ -2,8 +2,8 @@ package views
 
 import (
 	"embed"
-	"example/skeleton/middleware"
-	tmpl "example/skeleton/templates"
+	"{{cookiecutter.project_name}}/middleware"
+	tmpl "{{cookiecutter.project_name}}/templates"
 	// "fmt"
 	"github.com/go-chi/chi/v5"
 	log "github.com/sirupsen/logrus"

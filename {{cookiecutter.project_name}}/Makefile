@@ -26,7 +26,7 @@ test-no-build:
 	RUNTIME_ENV=TESTING ADD_DUMMIES=1 go test -coverprofile=test_coverage.out ./...
 
 test-debug:
-	RUNTIME_ENV=TESTING ADD_DUMMIES=1 dlv test example/skeleton/views -test.v
+	RUNTIME_ENV=TESTING ADD_DUMMIES=1 dlv test {{cookiecutter.project_name}}/views -test.v
 
 coverage: test
 	go tool cover -html=test_coverage.out

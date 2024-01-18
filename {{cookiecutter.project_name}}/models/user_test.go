@@ -8,7 +8,7 @@ import (
 func TestUserCreationAndRetrieval(t *testing.T) {
 	user := &User{
 		Name:     "Vincent",
-		Email:    "vincent@saulys.me",
+		Email:    "vincent@example.com",
 		Password: "password",
 	}
 	Db.Create(user)
@@ -19,7 +19,7 @@ func TestUserCreationAndRetrieval(t *testing.T) {
 		user.Uuid,
 		"user.Uuid is _not_ a uuid")
 	assert.Equal(t, user.Name, "Vincent")
-	assert.Equal(t, user.Email, "vincent@saulys.me")
+	assert.Equal(t, user.Email, "vincent@example.com")
 	assert.NotEqual(t, user.Password, "password", "Password is not being hashed")
 	assert.False(t, user.VerifyPassword(user.Password),
 		"Hashed password should not pass VerifyPassword")

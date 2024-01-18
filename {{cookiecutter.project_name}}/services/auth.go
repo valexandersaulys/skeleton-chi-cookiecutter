@@ -2,7 +2,7 @@ package services
 
 import (
 	"errors"
-	"example/skeleton/models"
+	"{{cookiecutter.project_name}}/models"
 	// log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )

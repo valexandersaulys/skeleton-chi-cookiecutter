@@ -2,8 +2,8 @@ package middleware
 
 import (
 	"encoding/gob"
-	"example/skeleton/config"
-	"example/skeleton/models"
+	"{{cookiecutter.project_name}}/config"
+	"{{cookiecutter.project_name}}/models"
 	"fmt"
 	sessions "github.com/gorilla/sessions"
 	// "github.com/quasoft/memstore"

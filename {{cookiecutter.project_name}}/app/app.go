@@ -1,8 +1,8 @@
 package app
 
 import (
-	"example/skeleton/config"
-	"example/skeleton/views"
+	"{{cookiecutter.project_name}}/config"
+	"{{cookiecutter.project_name}}/views"
 	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"

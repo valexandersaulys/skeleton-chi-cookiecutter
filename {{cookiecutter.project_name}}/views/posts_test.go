@@ -2,9 +2,9 @@ package views
 
 import (
 	"errors"
-	"example/skeleton/middleware"
-	"example/skeleton/models"
-	"example/skeleton/services"
+	"{{cookiecutter.project_name}}/middleware"
+	"{{cookiecutter.project_name}}/models"
+	"{{cookiecutter.project_name}}/services"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/stretchr/testify/assert"
@@ -37,7 +37,7 @@ func TestNewPostRoutes(t *testing.T) {
 	models.RunInit()
 	models.CreateDummyPosts()
 	app := createTestRouter()
-	cookie := start_session("vincent@saulys.me", "password", app)
+	cookie := start_session("vincent@example.com", "password", app)
 	assert.NotEqual(t, "", cookie)
 
 	reqN := httptest.NewRequest("GET", "/posts/new", nil)
@@ -103,7 +103,7 @@ func TestUpdatePostRoutes(t *testing.T) {
 	middleware.InitializeSessionStore()
 	models.RunInit()
 	app := createTestRouter()
-	cookie := start_session("vincent@saulys.me", "password", app)
+	cookie := start_session("vincent@example.com", "password", app)
 	assert.NotEqual(t, "", cookie)
 
 	// Retrieve default user
