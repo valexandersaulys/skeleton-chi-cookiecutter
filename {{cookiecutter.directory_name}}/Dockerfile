@@ -12,7 +12,8 @@ RUN go mod download
 ENV CGO_CFLAGS="-D_LARGEFILE64_SOURCE"
 
 COPY . /src
-RUN make build
+RUN mkdir -p _build/
+RUN go build -o _build/output.bin .
 
 FROM alpine:latest AS runtime
 COPY --from=builder /src/_build/{{cookiecutter.application_name}}.bin /usr/bin/{{cookiecutter.application_name}}.bin

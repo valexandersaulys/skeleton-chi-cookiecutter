@@ -22,6 +22,8 @@ Then Deploy!
 ```sh
 git init .
 kamal init
+# ... modify .env
+kamal setup
 kamal deploy
 ```
 
