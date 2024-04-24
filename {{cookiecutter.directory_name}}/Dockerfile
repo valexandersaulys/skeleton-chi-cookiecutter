@@ -16,7 +16,7 @@ RUN mkdir -p _build/
 RUN go build -o _build/output.bin .
 
 FROM alpine:latest AS runtime
-COPY --from=builder /src/_build/{{cookiecutter.application_name}}.bin /usr/bin/{{cookiecutter.application_name}}.bin
+COPY --from=builder /src/_build/output.bin /usr/bin/output.bin
 
 # Runtime environmental values -- these don't affect build
 ENV CSRF_PROTECTION_KEY="1234"
