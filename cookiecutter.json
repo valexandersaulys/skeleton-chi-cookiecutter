@@ -1,8 +1,9 @@
 {
   "directory_name": "chi-blog",
   "application_name": "chiblog",
-  "project_name": "",
-  "deploy_ip": "127.0.0.1",  
+  "project_name": "example/chiblog",
+  "deploy_ip": "127.0.0.1",
+  "container_registry_name": "example",
   "_copy_without_render": [
     "*tmpl"
   ]
