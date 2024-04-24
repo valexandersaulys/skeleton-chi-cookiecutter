@@ -22,4 +22,4 @@ ENV CSRF_PROTECTION_KEY="1234"
 ENV RUNTIME_ENV=LOCAL
 ENV ADD_DUMMIES=false
 
-ENTRYPOINT ["/usr/bin/output.bin", "--log-level", "INFO", "--log-path", "/tmp/chi.logs", "--port", "2999"]
+ENTRYPOINT ["/usr/bin/output.bin", "--log-level", "INFO", "--log-path", "/tmp/chi.logs", "--port", "80"]

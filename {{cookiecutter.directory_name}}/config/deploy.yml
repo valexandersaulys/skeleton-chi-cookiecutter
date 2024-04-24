@@ -1,0 +1,115 @@
+# Kamal Config
+
+# Name of your application. Used to uniquely configure containers.
+service: {{cookiecutter.application_name}}
+
+# Name of the container image.
+image: {{cookiecutter.application_name}}
+
+# Deploy to these servers.
+servers:
+  web:
+    hosts:
+      - <REPLACE-THIS>
+    labels:
+      traefik.http.routers.testvincentsaulys_secure.entrypoints: websecure
+      traefik.http.routers.testvincentsaulys_secure.rule: "Host(`{{cookiecutter.application_name}}.com`)"
+      traefik.http.routers.testvincentsaulys_secure.tls: true  
+
+# Credentials for your image host.
+registry:
+  # Specify the registry server, if you're not using Docker Hub
+  # server: registry.digitalocean.com / ghcr.io / ...
+  username: {{cookiecutter.application_name}}
+
+  # Always use an access token rather than real password when possible.
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+# Inject ENV variables into containers (secrets come from .env).
+# Remember to run `kamal env push` after making changes!
+env:
+  # clear:
+  #   DB_HOST: 192.168.0.2
+  secret:
+    - CSRF_PROTECTION_KEY
+    - RUNTIME_ENV
+    - ADD_DUMMIES
+
+# Use a different ssh user than root
+# ssh:
+#   user: app
+
+# Configure builder setup.
+# builder:
+#   args:
+#     RUBY_VERSION: 3.2.0
+#   secrets:
+#     - GITHUB_TOKEN
+#   remote:
+#     arch: amd64
+#     host: ssh://app@192.168.0.1
+
+# Use accessory services (secrets come from .env).
+accessories:
+  redis:
+    image: redis:7.2-alpine
+    # host: 
+    # port: 6379
+    directories:
+      - /data/redis/:/data
+  litestream:
+    image: litestream/litestream
+    # https://litestream.io/reference/restore/
+    # docker -v /data/db/:/data/db/ -v /data/litestream.yml:/etc/litestream.yml litestream/litestream restore    
+    cmd: replicate  
+    env:
+      secret:
+        - LITESTREAM_ACCESS_KEY_ID
+        - LITESTREAM_SECRET_ACCESS_KEY
+    directories:
+      - /data/db/:/data/db/
+      - /data/litestream.yml:/etc/litestream.yml
+#   db:
+#     image: mysql:8.0
+#     host: 192.168.0.2
+#     port: 3306
+#     env:
+#       clear:
+#         MYSQL_ROOT_HOST: '%'
+#       secret:
+#         - MYSQL_ROOT_PASSWORD
+#     files:
+#       - config/mysql/production.cnf:/etc/mysql/my.cnf
+#       - db/production.sql:/docker-entrypoint-initdb.d/setup.sql
+#     directories:
+#       - data:/var/lib/mysql
+
+# Configure custom arguments for Traefik
+# traefik:
+#   args:
+#     accesslog: true
+#     accesslog.format: json
+
+# Configure a custom healthcheck (default is /up on port 3000)
+# Happens within the container
+healthcheck:
+  path: /ping
+  port: 80
+
+# Configure rolling deploys by setting a wait time between batches of restarts.
+# boot:
+#   limit: 10 # Can also specify as a percentage of total hosts, such as "25%"
+#   wait: 2
+
+# Configure the role used to determine the primary_host. This host takes
+# deploy locks, runs health checks during the deploy, and follow logs, etc.
+#
+# Caution: there's no support for role renaming yet, so be careful to cleanup
+#          the previous role on the deployed hosts.
+# primary_role: web
+
+# Controls if we abort when see a role with no hosts. Disabling this may be
+# useful for more complex deploy configurations.
+#
+# allow_empty_roles: false

@@ -1,0 +1,10 @@
+.env
+*db
+*sqlite3
+*log
+*logs
+*bin
+
+_build/*
+test_coverage.out
+*out⏎
