@@ -42,5 +42,12 @@ lint:
 	staticcheck ./...
 #golangci-lint run -D errcheck ./...  => doesn't work as well
 
-docker:
-	docker build . -t skeleton-chi:local
+docker-build:
+	docker build . -t {{application_name}}:local
+
+docker-run: docker-build
+	docker --entrypoint="/usr/bin/output.bin --log-level INFO --log-path /tmp/chi.logs --port 80" run {{application_name}}:local
+
+deploy:
+	kamal init
+	kamal setup

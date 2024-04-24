@@ -5,6 +5,22 @@ Work in Progress.
 Unlike Django & Rails, [`chi`](https://go-chi.io/#/) does not enforce
 structure. This is an attempt to layout such a structure. 
 
+## Build & Deploy
+
+Naked Application
+```sh
+make install
+make test
+make run
+```
+
+Using Docker
+```sh
+make docker-build
+make docker-run
+```
+
+Then Deploy
 
 ## Directory Layout
 ```

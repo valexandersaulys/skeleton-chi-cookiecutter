@@ -2,6 +2,7 @@
   "directory_name": "chi-blog",
   "application_name": "chiblog",
   "project_name": "github.com/valexandersaulys/chi-blog",
+  "deploy_ip": "127.0.0.1",  
   "_copy_without_render": [
     "*tmpl"
   ]
