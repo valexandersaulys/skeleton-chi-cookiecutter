@@ -48,6 +48,3 @@ docker-build:
 docker-run: docker-build
 	docker --entrypoint="/usr/bin/output.bin --log-level INFO --log-path /tmp/chi.logs --port 80" run {{cookiecutter.application_name}}:local
 
-deploy:
-	kamal init
-	kamal setup

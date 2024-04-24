@@ -16,9 +16,9 @@ func RunInit() {
 	case "LOCAL":
 		sqlDb = sqlite.Open("/tmp/{{cookiecutter.application_name}}.db")
 	case "DEV":
-		sqlDb = sqlite.Open("/tmp/{{cookiecutter.application_name}}.db")
+		sqlDb = sqlite.Open("/data/db/{{cookiecutter.application_name}}.db")
 	case "PROD":
-		sqlDb = sqlite.Open("/tmp/{{cookiecutter.application_name}}.db")
+		sqlDb = sqlite.Open("/data/db/{{cookiecutter.application_name}}.db")
 	default:
 		sqlDb = sqlite.Open("/tmp/{{cookiecutter.application_name}}.db")
 	}
