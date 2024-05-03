@@ -31,17 +31,17 @@ func RunInit() {
 		panic(err)
 	}
 
-	if sqlDb, err := Db.DB(); err != nil {
+	if underlyingDb, err := Db.DB(); err != nil {
 		panic(err)
 	}
 
-	if err := sqlDb.Ping(); err != nil {
+	if err := underlyingDb.Ping(); err != nil {
 		panic(err)
 	}
 
 	// TODO: turn this into an environmental variable
-	sqlDb.SetMaxIdleConns(*config.MaxIdleDbConnections)
-	sqlDb.SetMaxOpenConns(*config.MaxOpenDbConnections)
+	underlyingDb.SetMaxIdleConns(*config.MaxIdleDbConnections)
+	underlyingDb.SetMaxOpenConns(*config.MaxOpenDbConnections)
 
 	if *config.RunMigrations {
 		Db.AutoMigrate(&User{}, &Post{})
