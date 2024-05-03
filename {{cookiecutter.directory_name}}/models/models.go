@@ -30,7 +30,14 @@ func RunInit() {
 	if err != nil {
 		panic(err)
 	}
-	// Silence is golden: no error? We're good
+
+	if err := Db.DB().Ping(); err != nil {
+		panic(err)
+	}
+
+	// TODO: turn this into an environmental variable
+	db.DB().SetMaxIdleConns(*config.MaxIdleDbConnections)
+	db.DB().SetMaxOpenConns(*config.MaxOpenDbConnections)
 
 	if *config.RunMigrations {
 		Db.AutoMigrate(&User{}, &Post{})

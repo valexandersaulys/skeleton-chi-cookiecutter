@@ -19,6 +19,8 @@ var PrintRoutes = flag.Bool("routes", false, "Generate router documentation")
 var RunMigrations = flag.Bool("migrate", true, "Whether to run model migrations")
 var RuntimePort = flag.Int("port", 3000, "Specify the runtime port to run on")
 var Timeout = flag.Int("timeout", -1, "Specify timeout before 504 Gateway Timeout error to client")
+var MaxIdleDbConnections = flag.Int("max-idle-db-connections", 10, "Set the max number of idle database connections")
+var MaxOpenDbConnections = flag.Int("max-open-db-connections", 100, "Set the max number of open database connections")
 
 // var RawSqlQuery = flag.String("sql-query", "", "If specified, this will execute a sql query")
 

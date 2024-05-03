@@ -54,7 +54,13 @@ E.g. `post_detail.html.tmpl`, `post_list.html.tmpl`,
 
 Optimization is the root of all bugs. That means `gorm` is leveraged without 
 any functions on top (e.g. no `GetPostByUuid(...)`). In the future, you'd 
-probably remove this so as to leverage raw SQL queries. 
+probably remove this so as to leverage raw SQL queries.
+
+We can, in fact, [share the database
+object](https://stackoverflow.com/a/61823123). This is because, [under
+the covers](https://gorm.io/docs/generic_interface.html), Gorm uses
+the [`sql.DB`](https://pkg.go.dev/database/sql#DB) which explicitly
+allows for this. It will create and free connections internally. 
 
 
 ### Testing
