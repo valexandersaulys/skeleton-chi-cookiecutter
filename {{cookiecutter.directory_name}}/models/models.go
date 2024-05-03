@@ -31,7 +31,8 @@ func RunInit() {
 		panic(err)
 	}
 
-	if underlyingDb, err := Db.DB(); err != nil {
+	underlyingDb, err := Db.DB()
+	if err != nil {
 		panic(err)
 	}
 
