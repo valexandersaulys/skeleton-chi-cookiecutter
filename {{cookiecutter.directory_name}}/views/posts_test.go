@@ -2,9 +2,6 @@ package views
 
 import (
 	"errors"
-	"{{cookiecutter.project_name}}/middleware"
-	"{{cookiecutter.project_name}}/models"
-	"{{cookiecutter.project_name}}/services"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/stretchr/testify/assert"
@@ -13,6 +10,9 @@ import (
 	"net/http/httptest"
 	"slices"
 	"testing"
+	"{{cookiecutter.project_name}}/middleware"
+	"{{cookiecutter.project_name}}/models"
+	"{{cookiecutter.project_name}}/services"
 )
 
 func TestPostsListRoute(t *testing.T) {
@@ -40,6 +40,7 @@ func TestNewPostRoutes(t *testing.T) {
 	cookie := start_session("vincent@example.com", "password", app)
 	assert.NotEqual(t, "", cookie)
 
+	// GET a new post
 	reqN := httptest.NewRequest("GET", "/posts/new", nil)
 	respN := executeRequest(reqN, app, cookie)
 	assert.Equal(t, http.StatusOK, respN.Code)
@@ -49,6 +50,7 @@ func TestNewPostRoutes(t *testing.T) {
 	assert.Equal(t, doc.Find("textarea[name='content']").Size(), 1)
 	assert.Equal(t, doc.Find("input[name='is_public']").Size(), 1)
 
+	// POST a new post
 	req := httptest.NewRequest(
 		http.MethodPost,
 		"/posts/new",
@@ -62,13 +64,14 @@ func TestNewPostRoutes(t *testing.T) {
 	assert.Equal(t, http.StatusSeeOther, resp.StatusCode, "Not Getting a 'status see other' response")
 	assert.Equal(t, "/posts", resp.Header.Get("Location"), "Did not get redirect to /posts")
 
+	// Check database has this post
 	post := &models.Post{}
 	models.Db.Where("title = ?", "TestNewPostRoute").First(&post)
 	assert.Equal(t, post.Title, "TestNewPostRoute", "New Post could not be found in Database?")
 	assert.Equal(t, post.Content, "TestNewPostRouteContent")
 	assert.True(t, post.IsPublic, "Post is not public by default as we expected")
 
-	// ---- attempt to get detail of _public_ post
+	// attempt to get detail of _public_ post
 	detailPostUrl := fmt.Sprintf("/posts/%s", post.Uuid)
 	req = httptest.NewRequest("GET", detailPostUrl, nil)
 	respDetailGet := executeRequest(req, app)
@@ -78,7 +81,7 @@ func TestNewPostRoutes(t *testing.T) {
 	assert.Contains(t, doc.Text(), post.Title)
 	assert.Contains(t, doc.Text(), post.Content)
 
-	// ---- Confirm Validation Errors if we send empty body
+	// Confirm Validation Errors if we send empty body
 	req = httptest.NewRequest(
 		http.MethodPost,
 		"/posts/new",
@@ -121,7 +124,7 @@ func TestUpdatePostRoutes(t *testing.T) {
 	dummyPost := (*allPostsForUser)[idx]
 	assert.NotEqual(t, "", dummyPost.Uuid)
 
-	// ---- GET update post via routes
+	// GET update post via routes
 	req := httptest.NewRequest("GET", fmt.Sprintf("/posts/%s/edit", dummyPost.Uuid), nil)
 	resp := executeRequest(req, app, cookie)
 	assert.Equal(t, http.StatusOK, resp.Code)
@@ -133,7 +136,7 @@ func TestUpdatePostRoutes(t *testing.T) {
 	assert.Equal(t, 1, doc.Find("input[name='is_public']").Size(), raw_string)
 	anotherCookie := resp.Result().Header.Get("set-cookie") // Needed for checking errors
 
-	// ---- POST update post via routes
+	// POST update post via routes
 	req = httptest.NewRequest(
 		http.MethodPost,
 		fmt.Sprintf("/posts/%s/edit", dummyPost.Uuid),
