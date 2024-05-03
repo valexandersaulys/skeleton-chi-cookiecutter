@@ -60,7 +60,8 @@ We can, in fact, [share the database
 object](https://stackoverflow.com/a/61823123). This is because, [under
 the covers](https://gorm.io/docs/generic_interface.html), Gorm uses
 the [`sql.DB`](https://pkg.go.dev/database/sql#DB) which explicitly
-allows for this. It will create and free connections internally. 
+allows for this. It will create and free connections internally. [More
+docs here](https://go.dev/doc/database/manage-connections). 
 
 
 ### Testing

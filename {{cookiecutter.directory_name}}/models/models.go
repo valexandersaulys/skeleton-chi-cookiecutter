@@ -12,13 +12,13 @@ func RunInit() {
 	var sqlDb gorm.Dialector
 	switch *config.Environment {
 	case "TESTING":
-		sqlDb = sqlite.Open("file::memory:?cache=shared")
+		sqlDb = sqlite.Open("file::memory:?cache=shared&_journal_mode=WAL")
 	case "LOCAL":
-		sqlDb = sqlite.Open("/tmp/{{cookiecutter.application_name}}.db")
+		sqlDb = sqlite.Open("/tmp/{{cookiecutter.application_name}}.db?_journal_mode=WAL")
 	case "DEV":
-		sqlDb = sqlite.Open("/data/db/{{cookiecutter.application_name}}.db")
+		sqlDb = sqlite.Open("/data/db/{{cookiecutter.application_name}}.db?_journal_mode=WAL")
 	case "PROD":
-		sqlDb = sqlite.Open("/data/db/{{cookiecutter.application_name}}.db")
+		sqlDb = sqlite.Open("/data/db/{{cookiecutter.application_name}}.db?_journal_mode=WAL")
 	default:
 		sqlDb = sqlite.Open("/tmp/{{cookiecutter.application_name}}.db")
 	}
@@ -40,7 +40,6 @@ func RunInit() {
 		panic(err)
 	}
 
-	// TODO: turn this into an environmental variable
 	underlyingDb.SetMaxIdleConns(*config.MaxIdleDbConnections)
 	underlyingDb.SetMaxOpenConns(*config.MaxOpenDbConnections)
 
