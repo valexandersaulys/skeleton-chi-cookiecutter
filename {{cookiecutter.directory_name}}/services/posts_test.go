@@ -1,23 +1,28 @@
 package services
 
 import (
-	"{{cookiecutter.project_name}}/models"
-	"github.com/stretchr/testify/assert"
-	// "sort"
+	"context"
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"slices"
 	"testing"
+	"{{cookiecutter.project_name}}/models"
 )
 
 func TestRetrieveAndUpdatePosts(t *testing.T) {
 	models.RunInit()
-	dummyPosts := models.CreateDummyPosts() // author.name == "Vincent"
+
+	db, err := models.GetDbWithNoContext()
+	if err != nil {
+		panic(err)
+	}
+	dummyPosts := models.CreateDummyPosts(db) // author.name == "Vincent"
 
 	privatePost := dummyPosts[0]
 	privatePost.IsPublic = false
-	models.Db.Save(privatePost)
+	db.Save(privatePost)
 
-	publicPosts := RetrieveAllPublicPosts()
+	publicPosts := RetrieveAllPublicPosts(context.TODO())
 
 	for _, dummyPost := range dummyPosts[1:] {
 		if !dummyPost.IsPublic {
@@ -35,25 +40,26 @@ func TestRetrieveAndUpdatePosts(t *testing.T) {
 		assert.False(t, true, "Should _not_ be able to find private post in public posts")
 	}
 
-	yay, retrievedPost := RetrieveDetailPost(privatePost.Uuid)
+	yay, retrievedPost := RetrieveDetailPost(context.TODO(), privatePost.Uuid)
 	assert.True(t, yay, "Could not successfully retrieve details for _private_ post")
 	assert.Equal(t, retrievedPost.Uuid, privatePost.Uuid)
 	assert.Equal(t, retrievedPost.ID, privatePost.ID)
 
-	nay, _ := RetrieveDetailPost("3a682ebf-71d7-4d82-98ae-d626539243fe")
+	nay, _ := RetrieveDetailPost(context.TODO(), "3a682ebf-71d7-4d82-98ae-d626539243fe")
 	assert.False(t, nay, "_Did_ successfully retrieve post for non-existent post")
 
 	var user models.User
-	models.Db.Where("name = ?", "Vincent").First(&user)
-	allPostsForUser := RetrieveAllPostsForUser(user)
+	db.Where("name = ?", "Vincent").First(&user)
+	allPostsForUser := RetrieveAllPostsForUser(context.TODO(), user)
 	assert.Equal(t, 4, len(*allPostsForUser))
 
 	var updatedPost *models.Post
-	yay, updatedPost = UpdatePostByUuid(map[string][]string{
-		"title":     []string{"My Updated Title"},
-		"content":   []string{"bicycle rights ethical raw denim ascot same"},
-		"is_public": []string{"1"},
-	}, privatePost.Uuid)
+	yay, updatedPost = UpdatePostByUuid(context.TODO(),
+		map[string][]string{
+			"title":     []string{"My Updated Title"},
+			"content":   []string{"bicycle rights ethical raw denim ascot same"},
+			"is_public": []string{"1"},
+		}, privatePost.Uuid)
 	assert.True(t, yay, fmt.Sprintf("Did _not_ successfully update the post with uuid=%s", privatePost.Uuid))
 	assert.NotNil(t, updatedPost)
 	assert.Equal(t, privatePost.Uuid, updatedPost.Uuid)
@@ -67,15 +73,19 @@ func TestRetrieveAndUpdatePosts(t *testing.T) {
 
 func TestCreateNewPost(t *testing.T) {
 	models.RunInit()
+	db, err := models.GetDbWithNoContext()
+	if err != nil {
+		panic(err)
+	}
 
 	user := &models.User{
 		Name:     "Vincent",
 		Email:    "vincent@example.com",
 		Password: "password",
 	}
-	models.Db.Create(user)
+	db.Create(user)
 
-	yay, validationBits := CreateNewPost(user, map[string][]string{
+	yay, validationBits := CreateNewPost(context.TODO(), user, map[string][]string{
 		"title":     []string{"TestCreateNewPost"},
 		"content":   []string{"TestCreateNewPostContent"},
 		"is_public": []string{"1"},
@@ -83,19 +93,21 @@ func TestCreateNewPost(t *testing.T) {
 	assert.True(t, yay, "Did not successfully create post after title, content, and is_public were active")
 	assert.Equal(t, validationBits, map[string]string{})
 
-	yay, validationBits = CreateNewPost(user, map[string][]string{
-		"title":     []string{""},
-		"content":   []string{"TestCreateNewPostContent"},
-		"is_public": []string{"1"},
-	})
+	yay, validationBits = CreateNewPost(context.TODO(),
+		user, map[string][]string{
+			"title":     []string{""},
+			"content":   []string{"TestCreateNewPostContent"},
+			"is_public": []string{"1"},
+		})
 	assert.False(t, yay, "_Did_ successfully create post despite missing title")
 	assert.NotEqual(t, validationBits, map[string]string{})
 
-	yay, validationBits = CreateNewPost(user, map[string][]string{
-		"title":     []string{"TestCreateNewPost"},
-		"content":   []string{""},
-		"is_public": []string{"1"},
-	})
+	yay, validationBits = CreateNewPost(context.TODO(),
+		user, map[string][]string{
+			"title":     []string{"TestCreateNewPost"},
+			"content":   []string{""},
+			"is_public": []string{"1"},
+		})
 	assert.False(t, yay, "_Did_ successfully create post despite missing content")
 	assert.NotEqual(t, validationBits, map[string]string{})
 
@@ -103,7 +115,7 @@ func TestCreateNewPost(t *testing.T) {
 	// will not have an input[type=checkbox] populated if its not
 	// at all checked.
 
-	yay, validationBits = CreateNewPost(user, map[string][]string{})
+	yay, validationBits = CreateNewPost(context.TODO(), user, map[string][]string{})
 	assert.False(t, yay)
 	assert.NotEqual(t, validationBits, map[string]string{})
 }

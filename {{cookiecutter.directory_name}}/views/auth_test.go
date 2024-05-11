@@ -1,19 +1,24 @@
 package views
 
 import (
-	"{{cookiecutter.project_name}}/middleware"
-	"{{cookiecutter.project_name}}/models"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"{{cookiecutter.project_name}}/middleware"
+	"{{cookiecutter.project_name}}/models"
 )
 
 func TestLoginUserRoute(t *testing.T) {
 	middleware.InitializeSessionStore()
 	models.RunInit()
-	models.CreateDummyPosts()
+	db, err := models.GetDbWithNoContext()
+	if err != nil {
+		panic(err)
+	}
+
+	models.CreateDummyPosts(db)
 	app := createTestRouter()
 
 	// ---- Test /login

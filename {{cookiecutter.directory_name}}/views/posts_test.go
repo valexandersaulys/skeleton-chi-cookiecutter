@@ -1,6 +1,7 @@
 package views
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
@@ -18,7 +19,11 @@ import (
 func TestPostsListRoute(t *testing.T) {
 	middleware.InitializeSessionStore()
 	models.RunInit()
-	posts := models.CreateDummyPosts()
+	db, err := models.GetDbWithNoContext()
+	if err != nil {
+		panic(err)
+	}
+	posts := models.CreateDummyPosts(db)
 	app := createTestRouter()
 
 	req := httptest.NewRequest("GET", "/posts", nil)
@@ -35,7 +40,12 @@ func TestPostsListRoute(t *testing.T) {
 func TestNewPostRoutes(t *testing.T) {
 	middleware.InitializeSessionStore()
 	models.RunInit()
-	models.CreateDummyPosts()
+	db, err := models.GetDbWithNoContext()
+	if err != nil {
+		panic(err)
+	}
+
+	models.CreateDummyPosts(db)
 	app := createTestRouter()
 	cookie := start_session("vincent@example.com", "password", app)
 	assert.NotEqual(t, "", cookie)
@@ -66,7 +76,7 @@ func TestNewPostRoutes(t *testing.T) {
 
 	// Check database has this post
 	post := &models.Post{}
-	models.Db.Where("title = ?", "TestNewPostRoute").First(&post)
+	db.Where("title = ?", "TestNewPostRoute").First(&post)
 	assert.Equal(t, post.Title, "TestNewPostRoute", "New Post could not be found in Database?")
 	assert.Equal(t, post.Content, "TestNewPostRouteContent")
 	assert.True(t, post.IsPublic, "Post is not public by default as we expected")
@@ -105,19 +115,24 @@ func TestNewPostRoutes(t *testing.T) {
 func TestUpdatePostRoutes(t *testing.T) {
 	middleware.InitializeSessionStore()
 	models.RunInit()
+	db, err := models.GetDbWithNoContext()
+	if err != nil {
+		panic(err)
+	}
+
 	app := createTestRouter()
 	cookie := start_session("vincent@example.com", "password", app)
 	assert.NotEqual(t, "", cookie)
 
 	// Retrieve default user
 	user := &models.User{}
-	result := models.Db.Where("name = ?", "Vincent").Take(&user) // First adds "ORDER BY id"
+	result := db.Where("name = ?", "Vincent").Take(&user) // First adds "ORDER BY id"
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		panic("Did we not initiate user yet?")
 	}
 
 	// Get first private post for User
-	allPostsForUser := services.RetrieveAllPostsForUser(*user)
+	allPostsForUser := services.RetrieveAllPostsForUser(context.TODO(), *user)
 	assert.GreaterOrEqual(t, len(*allPostsForUser), 1, "We don't have at least one post")
 	idx := slices.IndexFunc(*allPostsForUser, func(p models.Post) bool { return !p.IsPublic })
 	assert.NotEqual(t, -1, idx, "Cannot find a private post for user")

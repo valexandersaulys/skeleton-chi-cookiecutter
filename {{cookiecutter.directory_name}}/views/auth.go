@@ -1,13 +1,13 @@
 package views
 
 import (
-	"{{cookiecutter.project_name}}/middleware"
-	"{{cookiecutter.project_name}}/services"
-	tmpl "{{cookiecutter.project_name}}/templates"
 	"github.com/gorilla/csrf"
 	log "github.com/sirupsen/logrus"
 	"html/template"
 	"net/http"
+	"{{cookiecutter.project_name}}/middleware"
+	"{{cookiecutter.project_name}}/services"
+	tmpl "{{cookiecutter.project_name}}/templates"
 )
 
 func getAuthLogin(w http.ResponseWriter, r *http.Request) {
@@ -63,7 +63,7 @@ func postAuthLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	r.ParseForm()
-	success, validationIssues, user := services.AuthenticateUser(r.Form)
+	success, validationIssues, user := services.AuthenticateUser(r.Context(), r.Form)
 	if !success {
 		log.Debug(validationIssues)
 		sessionFlashes.AddFlash(validationIssues["error"], "error")

@@ -27,9 +27,9 @@ func getPostRoute(w http.ResponseWriter, r *http.Request) {
 	var allPosts *[]models.Post
 	found, user := middleware.GetUserFromSession(sessionAuth)
 	if found {
-		allPosts = services.RetrieveAllPostsForUser(*user)
+		allPosts = services.RetrieveAllPostsForUser(r.Context(), *user)
 	} else {
-		allPosts = services.RetrieveAllPublicPosts()
+		allPosts = services.RetrieveAllPublicPosts(r.Context())
 	}
 	log.Debug(allPosts)
 
@@ -58,7 +58,7 @@ func getPostRoute(w http.ResponseWriter, r *http.Request) {
 
 func getDetailPostRoute(w http.ResponseWriter, r *http.Request) {
 	var postUuid string = chi.URLParam(r, "postUuid")
-	found, post := services.RetrieveDetailPost(postUuid)
+	found, post := services.RetrieveDetailPost(r.Context(), postUuid)
 	if !found {
 		http.Error(w, "Not Found", http.StatusNotFound)
 		return
@@ -129,7 +129,7 @@ func postNewPostRoute(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	success, validationIssues := services.CreateNewPost(user, r.Form)
+	success, validationIssues := services.CreateNewPost(r.Context(), user, r.Form)
 	if !success {
 		sessionFlashes.AddFlash(validationIssues["error"], "error")
 		err := sessionFlashes.Save(r, w)
@@ -152,7 +152,7 @@ func postNewPostRoute(w http.ResponseWriter, r *http.Request) {
 
 func getEditPostRoute(w http.ResponseWriter, r *http.Request) {
 	var postUuid string = chi.URLParam(r, "postUuid")
-	found, post := services.RetrieveDetailPost(postUuid)
+	found, post := services.RetrieveDetailPost(r.Context(), postUuid)
 	if !found {
 		http.Error(w, "Not Found", http.StatusNotFound)
 		return
@@ -182,7 +182,7 @@ func postEditPostRoute(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var postUuid string = chi.URLParam(r, "postUuid")
-	success, _ := services.UpdatePostByUuid(r.Form, postUuid)
+	success, _ := services.UpdatePostByUuid(r.Context(), r.Form, postUuid)
 	if !success {
 		http.Error(w, "Not Found", http.StatusNotFound)
 		return

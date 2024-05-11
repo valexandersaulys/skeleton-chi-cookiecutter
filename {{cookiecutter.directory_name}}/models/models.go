@@ -1,14 +1,24 @@
 package models
 
 import (
+	"context"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"{{cookiecutter.project_name}}/config"
 )
 
-var Db *gorm.DB
+func GetDb(ctx context.Context) (*gorm.DB, error) {
+	gormDb, err := GetDbWithNoContext()
+	if err != nil {
+		return nil, err
+	}
 
-func RunInit() {
+	return gormDb.WithContext(ctx), nil
+}
+
+func GetDbWithNoContext() (*gorm.DB, error) {
+	var gormDb *gorm.DB
+
 	var sqlDb gorm.Dialector
 	switch *config.Environment {
 	case "TESTING":
@@ -24,14 +34,20 @@ func RunInit() {
 	}
 
 	var err error
-	Db, err = gorm.Open(sqlDb, &gorm.Config{
+	gormDb, err = gorm.Open(sqlDb, &gorm.Config{
 		Logger: CustomGormLogger(true)(),
 	})
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
-	underlyingDb, err := Db.DB()
+	return gormDb, nil
+}
+
+func RunInit() {
+	gormDb, _ := GetDbWithNoContext()
+
+	underlyingDb, err := gormDb.DB()
 	if err != nil {
 		panic(err)
 	}
@@ -44,22 +60,22 @@ func RunInit() {
 	underlyingDb.SetMaxOpenConns(*config.MaxOpenDbConnections)
 
 	if *config.RunMigrations {
-		Db.AutoMigrate(&User{}, &Post{})
+		gormDb.AutoMigrate(&User{}, &Post{})
 	}
 }
 
-func ClearAll() {
-	Db.Where("id > ?", 0).Delete(&User{})
-	Db.Where("id > ?", 0).Delete(&Post{})
+func ClearAll(db *gorm.DB) {
+	db.Where("id > ?", 0).Delete(&User{})
+	db.Where("id > ?", 0).Delete(&Post{})
 }
 
-func CreateDummyPosts() []*Post {
+func CreateDummyPosts(db *gorm.DB) []*Post {
 	user := &User{
 		Name:     "Vincent",
 		Email:    "vincent@example.com",
 		Password: "password",
 	}
-	Db.Create(user)
+	db.Create(user)
 
 	posts := []*Post{
 		&Post{
@@ -87,6 +103,6 @@ func CreateDummyPosts() []*Post {
 			IsPublic: false,
 		},
 	}
-	Db.Create(posts)
+	db.Create(posts)
 	return posts
 }
