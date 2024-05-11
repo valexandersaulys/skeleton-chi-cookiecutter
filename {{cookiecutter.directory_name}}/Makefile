@@ -43,7 +43,7 @@ lint:
 #golangci-lint run -D errcheck ./...  => doesn't work as well
 
 docker-build:
-	docker build . -t {{cookiecutter.container_registry_name}}/{{cookiecutter.application_name}}:local
+	docker build . -t {{cookiecutter.container_registry_username}}/{{cookiecutter.application_name}}:local
 
 docker-run: docker-build
 	docker --entrypoint="/usr/bin/output.bin --log-level INFO --log-path /tmp/chi.logs --port 80" run {{cookiecutter.container_registry_name}}/{{cookiecutter.application_name}}:local
