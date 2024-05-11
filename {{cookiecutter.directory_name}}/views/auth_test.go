@@ -56,7 +56,7 @@ func TestLoginUserRoute(t *testing.T) {
 	doc, err = goquery.NewDocumentFromReader(resp.Body)
 	assert.Nil(t, err, "Should have no errors from parsing response in goquery")
 	assert.Equal(t, doc.Find("html").Size(), 1)
-	assert.Equal(t, doc.Find("h2").Size(), 4, "Could not find the 3 h2 tags")
+	assert.Equal(t, doc.Find("h2").Size(), 4, "Could not find the 4 h2 tags")
 
 	// TODO: Attempt log in again to get redirect to /posts
 
@@ -74,7 +74,7 @@ func TestLoginUserRoute(t *testing.T) {
 	// TODO: test that this returns an error on the html
 
 	// ---- Test that we can log out
-	req = httptest.NewRequest(http.MethodPost, "/logout", nil)
+	req = httptest.NewRequest(http.MethodGet, "/logout", nil)
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	resp = executeRequest(req, app, authCookie)
 	assert.Equal(t, http.StatusSeeOther, resp.Code)

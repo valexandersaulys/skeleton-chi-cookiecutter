@@ -1,8 +1,6 @@
 package app
 
 import (
-	"{{cookiecutter.project_name}}/config"
-	"{{cookiecutter.project_name}}/views"
 	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -12,6 +10,8 @@ import (
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"time"
+	"{{cookiecutter.project_name}}/config"
+	"{{cookiecutter.project_name}}/views"
 )
 
 func CreateApp() *chi.Mux {
@@ -42,7 +42,7 @@ func CreateApp() *chi.Mux {
 	}
 	if *config.Timeout != -1 {
 		// requires r.Context().Done() to be called
-		r.Use(middleware.Timeout(time.Duration(*config.Timeout)))
+		r.Use(middleware.Timeout(time.Duration(*config.Timeout) * time.Second))
 	}
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.RequestID)

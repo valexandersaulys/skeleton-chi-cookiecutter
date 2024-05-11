@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"errors"
+	"fmt"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 	"{{cookiecutter.project_name}}/models"
@@ -27,6 +28,7 @@ func AuthenticateUser(ctx context.Context, formData FormData) (bool, ValidationE
 	if err != nil {
 		log.Fatal(err)
 	}
+	log.Trace(formData)
 	email, ok := parseForm(formData, "email")
 	if !ok {
 		return false, ValidationErrors{"error": "No Email passed"}, &models.User{}
@@ -44,5 +46,7 @@ func AuthenticateUser(ctx context.Context, formData FormData) (bool, ValidationE
 	if user.VerifyPassword(password) {
 		return true, map[string]string{}, user
 	}
+
+	log.Trace(fmt.Sprintf("Attempting to log in user email=%s", user.Email))
 	return false, map[string]string{"error": "Cannot authenticate password"}, &models.User{}
 }

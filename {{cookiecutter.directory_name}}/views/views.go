@@ -31,7 +31,8 @@ func AddRoutes(r *chi.Mux) *chi.Mux {
 		postEditPostRoute)
 	r.Get("/login", getAuthLogin)
 	r.Post("/login", postAuthLogin)
-	r.Post("/logout", postAuthLogout)
+	r.Get("/logout", getAuthLogout)
+	// r.Post("/logout", postAuthLogout)
 	// --------------------
 
 	// ---------- Static, Missing, MethodNotAllowed

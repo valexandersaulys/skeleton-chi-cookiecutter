@@ -82,6 +82,11 @@ func postAuthLogin(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/posts", http.StatusSeeOther)
 }
 
+func getAuthLogout(w http.ResponseWriter, r *http.Request) {
+	// not sure why I made this POST only?
+	postAuthLogout(w, r)
+}
+
 func postAuthLogout(w http.ResponseWriter, r *http.Request) {
 	session, err := middleware.Store.Get(r, "auth")
 	if err != nil {

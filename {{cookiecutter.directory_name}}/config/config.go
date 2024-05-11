@@ -37,9 +37,7 @@ func RunInit() {
 	flag.Parse()
 
 	log_path := fmt.Sprintf("%s.%s", *LogPath, time.Now().Format("20060102"))
-	logFile, _ := os.OpenFile(
-		log_path,
-		os.O_RDWR|os.O_APPEND|os.O_CREATE, 0755)
+	logFile, _ := os.OpenFile(log_path, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0755)
 	log.SetOutput(logFile)
 	log.SetFormatter(&log.TextFormatter{
 		ForceColors:   false,
