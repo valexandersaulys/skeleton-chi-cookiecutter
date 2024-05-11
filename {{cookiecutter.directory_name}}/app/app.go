@@ -41,7 +41,7 @@ func CreateApp() *chi.Mux {
 		})
 	}
 	if *config.Timeout != -1 {
-		// requires r.Context().Done() to be called
+		// check for r.Context().Err() != nil if we should timeout
 		r.Use(middleware.Timeout(time.Duration(*config.Timeout) * time.Second))
 	}
 	r.Use(middleware.Recoverer)

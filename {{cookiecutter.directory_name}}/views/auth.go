@@ -51,10 +51,13 @@ func getAuthLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func postAuthLogin(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
 	session, err := middleware.Store.Get(r, "auth")
 	if err != nil {
 		log.Error(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	sessionFlashes, err := middleware.Store.Get(r, "flashes")
 	if err != nil {
@@ -63,8 +66,11 @@ func postAuthLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	r.ParseForm()
-	success, validationIssues, user := services.AuthenticateUser(r.Context(), r.Form)
-	if !success {
+	success, validationIssues, user := services.AuthenticateUser(ctx, r.Form)
+	if ctx.Err() != nil {
+		http.Error(w, "Server Timeout", http.StatusInternalServerError)
+		return
+	} else if !success {
 		log.Debug(validationIssues)
 		sessionFlashes.AddFlash(validationIssues["error"], "error")
 		sessionFlashes.Save(r, w)
