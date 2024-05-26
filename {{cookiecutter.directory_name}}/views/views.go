@@ -46,7 +46,7 @@ func AddRoutes(r *chi.Mux) *chi.Mux {
 			log.Error(err)
 			return
 		}
-		_template.Execute(w, &struct{}{})
+		_template.ExecuteTemplate(w, "all", &struct{}{})
 	})
 	r.MethodNotAllowed(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -56,7 +56,7 @@ func AddRoutes(r *chi.Mux) *chi.Mux {
 			log.Error(err)
 			return
 		}
-		_template.Execute(w, &struct{}{})
+		_template.ExecuteTemplate(w, "all", &struct{}{})
 	})
 	// --------------------
 

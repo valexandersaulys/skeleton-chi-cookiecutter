@@ -45,7 +45,7 @@ func getPostRoute(w http.ResponseWriter, r *http.Request) {
 
 	sessionFlashes.Save(r, w)
 	// must pass in pointer to struct here via &StructType
-	_template.Execute(w, &struct {
+	_template.ExecuteTemplate(w, "all", &struct {
 		Posts       *[]models.Post
 		FlashedInfo []interface{}
 		User        *models.User
@@ -71,7 +71,7 @@ func getDetailPostRoute(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_template.Execute(w, &struct {
+	_template.ExecuteTemplate(w, "all", &struct {
 		Post *models.Post
 	}{Post: post})
 }
@@ -97,7 +97,7 @@ func getNewPostRoute(w http.ResponseWriter, r *http.Request) {
 	csrfToken := csrf.Token(r)
 	log.Debug(csrfToken)
 
-	_template.Execute(w, &struct {
+	_template.ExecuteTemplate(w, "all", &struct {
 		FlashedError []interface{}
 		CsrfToken    string
 	}{
@@ -165,7 +165,7 @@ func getEditPostRoute(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_template.Execute(w, &struct {
+	_template.ExecuteTemplate(w, "all", &struct {
 		Post models.Post
 	}{
 		Post: *post,

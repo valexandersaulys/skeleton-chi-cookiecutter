@@ -41,7 +41,7 @@ func getAuthLogin(w http.ResponseWriter, r *http.Request) {
 	csrfToken := csrf.Token(r)
 	log.Debug(csrfToken)
 
-	_template.Execute(w, &struct {
+	_template.ExecuteTemplate(w, "all", &struct {
 		FlashedError []interface{}
 		CsrfToken    string
 	}{

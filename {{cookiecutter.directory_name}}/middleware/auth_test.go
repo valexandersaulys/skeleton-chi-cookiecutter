@@ -21,7 +21,6 @@ func TestAuthRequiredMiddleware(t *testing.T) {
 		panic(err)
 	}
 	models.CreateDummyPosts(db)
-	*config.Environment = "LOCAL" // change to force AuthRequired to not fail
 
 	nextHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { /*Add optional tests here*/ })
 	handlerToTest := AuthRequired(nextHandler)
@@ -42,6 +41,4 @@ func TestAuthRequiredMiddleware(t *testing.T) {
 	resp = httptest.NewRecorder()
 	handlerToTest.ServeHTTP(resp, req)
 	assert.Equal(t, http.StatusOK, resp.Code)
-
-	*config.Environment = "TESTING"
 }
