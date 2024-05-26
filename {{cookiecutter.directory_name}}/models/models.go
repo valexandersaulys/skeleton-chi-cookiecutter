@@ -1,6 +1,7 @@
 package models
 
 import (
+	_ "ariga.io/atlas-provider-gorm/gormschema"
 	"context"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"

@@ -4,6 +4,7 @@
   "project_name": "example/chiblog",
   "container_registry_username": "example",
   "_copy_without_render": [
-    "*tmpl"
+    "*tmpl",
+    "*hcl"
   ]
 }
