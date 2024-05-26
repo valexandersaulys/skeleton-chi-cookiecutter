@@ -1,7 +1,7 @@
 
 + [ ] add [custom support](https://pkg.go.dev/github.com/gorilla/sessions#FilesystemStore) for sqlite in [sessions](middleware/session.go#L14)
 + [ ] add redis support for [sessions](middleware/session.go#L14)
-+ [ ] go back to vanilla Go for handling HTMX
++ [X] go back to vanilla Go for handling HTMX
 + [ ] figure out a simple file upload both locally and with s3
 + [ ] Static file gathering, minifying, and pushing to s3 -- probably as a script?
 

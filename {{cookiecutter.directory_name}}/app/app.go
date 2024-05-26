@@ -6,7 +6,6 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 	"github.com/gorilla/csrf"
-	"github.com/mavolin/go-htmx"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"time"
@@ -72,7 +71,6 @@ func CreateApp() *chi.Mux {
 			})
 		})
 	}
-	r.Use(htmx.NewMiddleware()) // only needed for setting response headers
 	r.Use(middleware.Heartbeat("/ping"))
 	if *config.Profiler {
 		r.Mount("/debug", middleware.Profiler())
