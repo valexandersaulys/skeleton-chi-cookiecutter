@@ -47,6 +47,9 @@ atlas migrate apply --env=gorm --url="sqlite:///tmp/chiblog.db?_journal_mode=WAL
 ```
 Modify the `atlas.hcl` file to your needs. Note that you'll need to supply the necesary url such that it matches the paths in `models.go`. 
 
+### Watching SQL Queries in Logs
+If you run with `--log-level=trace` argument passed, GORM will push all SQL queries into the trace logs via [a custom logger](models/gorm_logger.go). 
+
 ### Sessions Middleware
 
 If using encryption, encryption keys need to be exactly 16, 24, or 32. Authentication keys can be any length. These are stored under the following environmental variables:
