@@ -60,7 +60,7 @@ func RunInit() {
 	underlyingDb.SetMaxIdleConns(*config.MaxIdleDbConnections)
 	underlyingDb.SetMaxOpenConns(*config.MaxOpenDbConnections)
 
-	if *config.RunMigrations {
+	if *config.RunMigrations || *config.Environment == "TESTING" {
 		gormDb.AutoMigrate(&User{}, &Post{})
 	}
 }

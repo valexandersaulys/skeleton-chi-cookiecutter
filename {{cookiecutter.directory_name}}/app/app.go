@@ -74,6 +74,9 @@ func CreateApp() *chi.Mux {
 	}
 	r.Use(htmx.NewMiddleware()) // only needed for setting response headers
 	r.Use(middleware.Heartbeat("/ping"))
+	if *config.Profiler {
+		r.Mount("/debug", middleware.Profiler())
+	}
 	// --------------------
 
 	if *config.Environment == "LOCAL" {
