@@ -19,6 +19,9 @@ var PrintRoutes = flag.Bool("routes", false, "Generate router documentation")
 var RunMigrations = flag.Bool("migrate", true, "Whether to run model migrations")
 var RuntimePort = flag.Int("port", 3000, "Specify the runtime port to run on")
 var Timeout = flag.Int("timeout", -1, "Specify timeout before 504 Gateway Timeout error to client")
+var MaxIdleDbConnections = flag.Int("max-idle-db-connections", 10, "Set the max number of idle database connections")
+var MaxOpenDbConnections = flag.Int("max-open-db-connections", 100, "Set the max number of open database connections")
+var Profiler = flag.Bool("profiler", false, "Whether to add the Go net/http/pprof profiler to /debug. Defaults to False.")
 
 // var RawSqlQuery = flag.String("sql-query", "", "If specified, this will execute a sql query")
 
@@ -35,9 +38,7 @@ func RunInit() {
 	flag.Parse()
 
 	log_path := fmt.Sprintf("%s.%s", *LogPath, time.Now().Format("20060102"))
-	logFile, _ := os.OpenFile(
-		log_path,
-		os.O_RDWR|os.O_APPEND|os.O_CREATE, 0755)
+	logFile, _ := os.OpenFile(log_path, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0755)
 	log.SetOutput(logFile)
 	log.SetFormatter(&log.TextFormatter{
 		ForceColors:   false,

@@ -1,10 +1,10 @@
 package models
 
 import (
-	"{{cookiecutter.project_name}}/config"
 	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
+	"{{cookiecutter.project_name}}/config"
 )
 
 func TestMain(m *testing.M) {
@@ -21,11 +21,13 @@ func TestMain(m *testing.M) {
 }
 
 func TestRunInit(t *testing.T) {
-	assert.Nil(t, Db, "Database should be Nil before RunInit()")
 	RunInit()
-	assert.NotNil(t, Db, "Database should be instantiated after RunInit()")
-	ClearAll()
-	CreateDummyPosts()
+	db, err := GetDbWithNoContext()
+	if err != nil {
+		panic(err)
+	}
+	ClearAll(db)
+	CreateDummyPosts(db)
 }
 
 func TestSmoke(t *testing.T) {

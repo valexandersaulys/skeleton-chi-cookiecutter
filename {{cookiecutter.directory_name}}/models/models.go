@@ -1,54 +1,82 @@
 package models
 
 import (
+	_ "ariga.io/atlas-provider-gorm/gormschema"
+	"context"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"{{cookiecutter.project_name}}/config"
 )
 
-var Db *gorm.DB
+func GetDb(ctx context.Context) (*gorm.DB, error) {
+	gormDb, err := GetDbWithNoContext()
+	if err != nil {
+		return nil, err
+	}
 
-func RunInit() {
+	return gormDb.WithContext(ctx), nil
+}
+
+func GetDbWithNoContext() (*gorm.DB, error) {
+	var gormDb *gorm.DB
+
 	var sqlDb gorm.Dialector
 	switch *config.Environment {
 	case "TESTING":
-		sqlDb = sqlite.Open("file::memory:?cache=shared")
+		sqlDb = sqlite.Open("file::memory:?cache=shared&_journal_mode=WAL")
 	case "LOCAL":
-		sqlDb = sqlite.Open("/tmp/{{cookiecutter.application_name}}.db")
+		sqlDb = sqlite.Open("/tmp/{{cookiecutter.application_name}}.db?_journal_mode=WAL")
 	case "DEV":
-		sqlDb = sqlite.Open("/tmp/{{cookiecutter.application_name}}.db")
+		sqlDb = sqlite.Open("/data/db/{{cookiecutter.application_name}}.db?_journal_mode=WAL")
 	case "PROD":
-		sqlDb = sqlite.Open("/tmp/{{cookiecutter.application_name}}.db")
+		sqlDb = sqlite.Open("/data/db/{{cookiecutter.application_name}}.db?_journal_mode=WAL")
 	default:
 		sqlDb = sqlite.Open("/tmp/{{cookiecutter.application_name}}.db")
 	}
 
 	var err error
-	Db, err = gorm.Open(sqlDb, &gorm.Config{
+	gormDb, err = gorm.Open(sqlDb, &gorm.Config{
 		Logger: CustomGormLogger(true)(),
 	})
 	if err != nil {
+		return nil, err
+	}
+
+	return gormDb, nil
+}
+
+func RunInit() {
+	gormDb, _ := GetDbWithNoContext()
+
+	underlyingDb, err := gormDb.DB()
+	if err != nil {
 		panic(err)
 	}
-	// Silence is golden: no error? We're good
 
-	if *config.RunMigrations {
-		Db.AutoMigrate(&User{}, &Post{})
+	if err := underlyingDb.Ping(); err != nil {
+		panic(err)
+	}
+
+	underlyingDb.SetMaxIdleConns(*config.MaxIdleDbConnections)
+	underlyingDb.SetMaxOpenConns(*config.MaxOpenDbConnections)
+
+	if *config.RunMigrations || *config.Environment == "TESTING" {
+		gormDb.AutoMigrate(&User{}, &Post{})
 	}
 }
 
-func ClearAll() {
-	Db.Where("id > ?", 0).Delete(&User{})
-	Db.Where("id > ?", 0).Delete(&Post{})
+func ClearAll(db *gorm.DB) {
+	db.Where("id > ?", 0).Delete(&User{})
+	db.Where("id > ?", 0).Delete(&Post{})
 }
 
-func CreateDummyPosts() []*Post {
+func CreateDummyPosts(db *gorm.DB) []*Post {
 	user := &User{
 		Name:     "Vincent",
 		Email:    "vincent@example.com",
 		Password: "password",
 	}
-	Db.Create(user)
+	db.Create(user)
 
 	posts := []*Post{
 		&Post{
@@ -76,6 +104,6 @@ func CreateDummyPosts() []*Post {
 			IsPublic: false,
 		},
 	}
-	Db.Create(posts)
+	db.Create(posts)
 	return posts
 }

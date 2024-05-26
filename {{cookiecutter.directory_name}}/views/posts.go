@@ -27,9 +27,9 @@ func getPostRoute(w http.ResponseWriter, r *http.Request) {
 	var allPosts *[]models.Post
 	found, user := middleware.GetUserFromSession(sessionAuth)
 	if found {
-		allPosts = services.RetrieveAllPostsForUser(*user)
+		allPosts = services.RetrieveAllPostsForUser(r.Context(), *user)
 	} else {
-		allPosts = services.RetrieveAllPublicPosts()
+		allPosts = services.RetrieveAllPublicPosts(r.Context())
 	}
 	log.Debug(allPosts)
 
@@ -45,7 +45,7 @@ func getPostRoute(w http.ResponseWriter, r *http.Request) {
 
 	sessionFlashes.Save(r, w)
 	// must pass in pointer to struct here via &StructType
-	_template.Execute(w, &struct {
+	_template.ExecuteTemplate(w, "all", &struct {
 		Posts       *[]models.Post
 		FlashedInfo []interface{}
 		User        *models.User
@@ -58,7 +58,7 @@ func getPostRoute(w http.ResponseWriter, r *http.Request) {
 
 func getDetailPostRoute(w http.ResponseWriter, r *http.Request) {
 	var postUuid string = chi.URLParam(r, "postUuid")
-	found, post := services.RetrieveDetailPost(postUuid)
+	found, post := services.RetrieveDetailPost(r.Context(), postUuid)
 	if !found {
 		http.Error(w, "Not Found", http.StatusNotFound)
 		return
@@ -71,7 +71,7 @@ func getDetailPostRoute(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_template.Execute(w, &struct {
+	_template.ExecuteTemplate(w, "all", &struct {
 		Post *models.Post
 	}{Post: post})
 }
@@ -97,7 +97,7 @@ func getNewPostRoute(w http.ResponseWriter, r *http.Request) {
 	csrfToken := csrf.Token(r)
 	log.Debug(csrfToken)
 
-	_template.Execute(w, &struct {
+	_template.ExecuteTemplate(w, "all", &struct {
 		FlashedError []interface{}
 		CsrfToken    string
 	}{
@@ -129,7 +129,7 @@ func postNewPostRoute(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	success, validationIssues := services.CreateNewPost(user, r.Form)
+	success, validationIssues := services.CreateNewPost(r.Context(), user, r.Form)
 	if !success {
 		sessionFlashes.AddFlash(validationIssues["error"], "error")
 		err := sessionFlashes.Save(r, w)
@@ -152,7 +152,7 @@ func postNewPostRoute(w http.ResponseWriter, r *http.Request) {
 
 func getEditPostRoute(w http.ResponseWriter, r *http.Request) {
 	var postUuid string = chi.URLParam(r, "postUuid")
-	found, post := services.RetrieveDetailPost(postUuid)
+	found, post := services.RetrieveDetailPost(r.Context(), postUuid)
 	if !found {
 		http.Error(w, "Not Found", http.StatusNotFound)
 		return
@@ -165,7 +165,7 @@ func getEditPostRoute(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_template.Execute(w, &struct {
+	_template.ExecuteTemplate(w, "all", &struct {
 		Post models.Post
 	}{
 		Post: *post,
@@ -182,7 +182,7 @@ func postEditPostRoute(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var postUuid string = chi.URLParam(r, "postUuid")
-	success, _ := services.UpdatePostByUuid(r.Form, postUuid)
+	success, _ := services.UpdatePostByUuid(r.Context(), r.Form, postUuid)
 	if !success {
 		http.Error(w, "Not Found", http.StatusNotFound)
 		return

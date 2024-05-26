@@ -6,12 +6,17 @@ import (
 )
 
 func TestUserCreationAndRetrieval(t *testing.T) {
+	db, err := GetDbWithNoContext()
+	if err != nil {
+		panic(err)
+	}
+
 	user := &User{
 		Name:     "Vincent",
 		Email:    "vincent@example.com",
 		Password: "password",
 	}
-	Db.Create(user)
+	db.Create(user)
 
 	assert.Len(t, user.Uuid, 36, "Uuid is not a length of 36 as expected")
 	assert.Regexp(t,

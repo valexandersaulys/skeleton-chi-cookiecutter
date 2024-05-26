@@ -1,17 +1,16 @@
 package app
 
 import (
-	"{{cookiecutter.project_name}}/config"
-	"{{cookiecutter.project_name}}/views"
 	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 	"github.com/gorilla/csrf"
-	"github.com/mavolin/go-htmx"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"time"
+	"{{cookiecutter.project_name}}/config"
+	"{{cookiecutter.project_name}}/views"
 )
 
 func CreateApp() *chi.Mux {
@@ -41,8 +40,8 @@ func CreateApp() *chi.Mux {
 		})
 	}
 	if *config.Timeout != -1 {
-		// requires r.Context().Done() to be called
-		r.Use(middleware.Timeout(time.Duration(*config.Timeout)))
+		// check for r.Context().Err() != nil if we should timeout
+		r.Use(middleware.Timeout(time.Duration(*config.Timeout) * time.Second))
 	}
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.RequestID)
@@ -72,8 +71,10 @@ func CreateApp() *chi.Mux {
 			})
 		})
 	}
-	r.Use(htmx.NewMiddleware()) // only needed for setting response headers
 	r.Use(middleware.Heartbeat("/ping"))
+	if *config.Profiler {
+		r.Mount("/debug", middleware.Profiler())
+	}
 	// --------------------
 
 	if *config.Environment == "LOCAL" {

@@ -1,34 +1,51 @@
 package services
 
 import (
+	"context"
 	"errors"
-	"{{cookiecutter.project_name}}/models"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
+	"{{cookiecutter.project_name}}/models"
 	// "github.com/go-playground/validator/v10"
 )
 
-func RetrieveAllPublicPosts() *[]models.Post {
+func RetrieveAllPublicPosts(ctx context.Context) *[]models.Post {
+	db, err := models.GetDb(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
 	posts := &[]models.Post{}
-	models.Db.Where("is_public = ?", true).Find(posts)
+	db.Where("is_public = ?", true).Find(posts)
 	return posts
 }
 
-func RetrieveAllPostsForUser(user models.User) *[]models.Post {
+func RetrieveAllPostsForUser(ctx context.Context, user models.User) *[]models.Post {
+	db, err := models.GetDb(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
 	posts := &[]models.Post{}
-	models.Db.Where("is_public = ?", true).Or("author_id = ?", user.ID).Find(posts)
+	db.Where("is_public = ?", true).Or("author_id = ?", user.ID).Find(posts)
 	return posts
 }
 
-func RetrieveDetailPost(postUuid string) (bool, *models.Post) {
+func RetrieveDetailPost(ctx context.Context, postUuid string) (bool, *models.Post) {
+	db, err := models.GetDb(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
 	post := &models.Post{}
-	result := models.Db.Where("uuid = ?", postUuid).Preload("Author").First(&post)
+	result := db.Where("uuid = ?", postUuid).Preload("Author").First(&post)
 	return !errors.Is(result.Error, gorm.ErrRecordNotFound), post
 }
 
 // returns bool for whether it was successfully created and map[string]string
 // for errors where the key is the problematic field
-func CreateNewPost(user *models.User, formData FormData) (bool, map[string]string) {
+func CreateNewPost(ctx context.Context, user *models.User, formData FormData) (bool, map[string]string) {
+	db, err := models.GetDb(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
 	title, ok := parseForm(formData, "title")
 	if !ok {
 		return false, map[string]string{"error": "No name='title' passed"}
@@ -45,13 +62,17 @@ func CreateNewPost(user *models.User, formData FormData) (bool, map[string]strin
 		IsPublic: is_public_parsed,
 		AuthorID: user.ID,
 	}
-	models.Db.Save(post)
+	db.Save(post)
 
 	return true, map[string]string{}
 }
 
-func UpdatePostByUuid(formData FormData, postUuid string) (bool, *models.Post) {
-	found, post := RetrieveDetailPost(postUuid)
+func UpdatePostByUuid(ctx context.Context, formData FormData, postUuid string) (bool, *models.Post) {
+	db, err := models.GetDb(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+	found, post := RetrieveDetailPost(ctx, postUuid)
 	if !found {
 		log.Errorf("Could not find post with uuid=%s", postUuid)
 		return false, &models.Post{}
@@ -79,7 +100,7 @@ func UpdatePostByUuid(formData FormData, postUuid string) (bool, *models.Post) {
 		post.IsPublic = is_public_parsed
 	}
 
-	models.Db.Save(&post)
+	db.Save(&post)
 
 	return true, post
 }

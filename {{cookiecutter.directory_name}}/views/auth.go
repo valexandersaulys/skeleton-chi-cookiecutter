@@ -1,13 +1,13 @@
 package views
 
 import (
-	"{{cookiecutter.project_name}}/middleware"
-	"{{cookiecutter.project_name}}/services"
-	tmpl "{{cookiecutter.project_name}}/templates"
 	"github.com/gorilla/csrf"
 	log "github.com/sirupsen/logrus"
 	"html/template"
 	"net/http"
+	"{{cookiecutter.project_name}}/middleware"
+	"{{cookiecutter.project_name}}/services"
+	tmpl "{{cookiecutter.project_name}}/templates"
 )
 
 func getAuthLogin(w http.ResponseWriter, r *http.Request) {
@@ -41,7 +41,7 @@ func getAuthLogin(w http.ResponseWriter, r *http.Request) {
 	csrfToken := csrf.Token(r)
 	log.Debug(csrfToken)
 
-	_template.Execute(w, &struct {
+	_template.ExecuteTemplate(w, "all", &struct {
 		FlashedError []interface{}
 		CsrfToken    string
 	}{
@@ -51,10 +51,13 @@ func getAuthLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func postAuthLogin(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
 	session, err := middleware.Store.Get(r, "auth")
 	if err != nil {
 		log.Error(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	sessionFlashes, err := middleware.Store.Get(r, "flashes")
 	if err != nil {
@@ -63,8 +66,11 @@ func postAuthLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	r.ParseForm()
-	success, validationIssues, user := services.AuthenticateUser(r.Form)
-	if !success {
+	success, validationIssues, user := services.AuthenticateUser(ctx, r.Form)
+	if ctx.Err() != nil {
+		http.Error(w, "Server Timeout", http.StatusInternalServerError)
+		return
+	} else if !success {
 		log.Debug(validationIssues)
 		sessionFlashes.AddFlash(validationIssues["error"], "error")
 		sessionFlashes.Save(r, w)
@@ -80,6 +86,11 @@ func postAuthLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, "/posts", http.StatusSeeOther)
+}
+
+func getAuthLogout(w http.ResponseWriter, r *http.Request) {
+	// not sure why I made this POST only?
+	postAuthLogout(w, r)
 }
 
 func postAuthLogout(w http.ResponseWriter, r *http.Request) {

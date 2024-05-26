@@ -1,13 +1,13 @@
 package main
 
 import (
+	"fmt"
+	"github.com/go-chi/docgen"
+	"net/http"
 	"{{cookiecutter.project_name}}/app"
 	"{{cookiecutter.project_name}}/config"
 	"{{cookiecutter.project_name}}/middleware"
 	"{{cookiecutter.project_name}}/models"
-	"fmt"
-	"github.com/go-chi/docgen"
-	"net/http"
 )
 
 func init() {
@@ -15,8 +15,12 @@ func init() {
 	models.RunInit()
 
 	if *config.AddDummyModels {
-		models.ClearAll()
-		models.CreateDummyPosts()
+		gormDb, err := models.GetDbWithNoContext()
+		if err != nil {
+			panic(err)
+		}
+		models.ClearAll(gormDb)
+		models.CreateDummyPosts(gormDb)
 	}
 
 }
@@ -25,9 +29,6 @@ func main() {
 	middleware.InitializeSessionStore()
 
 	r := app.CreateApp()
-	if models.Db == nil {
-		panic("Database Not initiated! Panicing and exiting")
-	}
 
 	if *config.PrintRoutes {
 		fmt.Println(docgen.MarkdownRoutesDoc(r, docgen.MarkdownOpts{

@@ -1,23 +1,33 @@
 package services
 
 import (
+	"context"
 	"errors"
-	"{{cookiecutter.project_name}}/models"
-	// log "github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
+	"{{cookiecutter.project_name}}/models"
 )
 
 // DEBUG: to be removed later
-func GetDefaultUser() *models.User {
+func GetDefaultUser(ctx context.Context) *models.User {
+	db, err := models.GetDb(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
 	user := &models.User{}
-	result := models.Db.Where("name = ?", "Vincent").Take(&user) // First adds "ORDER BY id"
+	result := db.Where("name = ?", "Vincent").Take(&user) // First adds "ORDER BY id"
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		panic("Did we not initiate user yet?")
 	}
 	return user
 }
 
-func AuthenticateUser(formData FormData) (bool, ValidationErrors, *models.User) {
+func AuthenticateUser(ctx context.Context, formData FormData) (bool, ValidationErrors, *models.User) {
+	db, err := models.GetDb(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	email, ok := parseForm(formData, "email")
 	if !ok {
 		return false, ValidationErrors{"error": "No Email passed"}, &models.User{}
@@ -28,12 +38,13 @@ func AuthenticateUser(formData FormData) (bool, ValidationErrors, *models.User) 
 	}
 
 	user := &models.User{}
-	result := models.Db.Where("email = ?", email).Take(&user)
+	result := db.Where("email = ?", email).Take(&user)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return false, map[string]string{"error": "Could not login. Check your email or password."}, &models.User{}
 	}
 	if user.VerifyPassword(password) {
 		return true, map[string]string{}, user
 	}
+
 	return false, map[string]string{"error": "Cannot authenticate password"}, &models.User{}
 }
