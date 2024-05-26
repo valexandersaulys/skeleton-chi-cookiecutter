@@ -13,24 +13,6 @@ make run
 ```
 
 
-## Notes on Usage
-
-### Atlas Migrations
-Support for doing database migrations supported through [Atlas](https://atlasgo.io):
-```sh
-atlas migrate diff --env=gorm 
-atlas migrate apply --env=gorm --url="sqlite:///tmp/chiblog.db?_journal_mode=WAL"
-```
-Modify the `atlas.hcl` file to your needs. Note that you'll need to supply the necesary url such that it matches the paths in `models.go`. 
-
-### Sessions Middleware
-
-If using encryption, encryption keys need to be exactly 16, 24, or 32. Authentication keys can be any length. These are stored under the following environmental variables:
-
-+ `COOKIE_STORE_AUTH_KEY=COOKIE_STORE_AUTH_KEY`:  authentication key
-+ `COOKIE_STORE_ENCRYPT_KEY=123456781234567812345678`:  _encryption key_
-
-
 ## License
 
 [MIT License](https://mit-license.org)

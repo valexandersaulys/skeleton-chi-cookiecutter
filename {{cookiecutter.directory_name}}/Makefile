@@ -19,7 +19,11 @@ clean:
 	rm /tmp/chi.db
 	rm /tmp/chi.logs.*
 
-test: build
+atlas-prep-for-tests:
+	atlas migrate diff --env=gorm
+    atlas migrate apply --env=gorm --url="file::memory:?cache=shared&_journal_mode=WAL"
+
+test: build atlas-prep-for-tests
 	COOKIE_STORE_AUTH_KEY=COOKIE_STORE_AUTH_KEY COOKIE_STORE_ENCRYPT_KEY=123456781234567812345678 RUNTIME_ENV=TESTING ADD_DUMMIES=1 go test -coverprofile=test_coverage.out ./...
 
 test-no-build: 
