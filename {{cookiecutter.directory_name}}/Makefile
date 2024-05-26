@@ -55,3 +55,8 @@ docker-build:
 docker-run: docker-build
 	docker --entrypoint="/usr/bin/output.bin --log-level INFO --log-path /tmp/chi.logs --port 80" run {{cookiecutter.container_registry_username}}/{{cookiecutter.application_name}}:local
 
+tailwind:
+	tailwindcss -i ./input.css -o ./views/public/output.css -m
+
+tailwind-watch:
+	tailwindcss -i ./input.css -o ./views/public/output.css --watch

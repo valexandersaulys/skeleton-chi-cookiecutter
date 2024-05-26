@@ -36,7 +36,6 @@ func AddRoutes(r *chi.Mux) *chi.Mux {
 	// --------------------
 
 	// ---------- Static, Missing, MethodNotAllowed
-	// r.Get("/static", rootStaticPath(http.FS(StaticFilesFS)))
 	HandleStaticFiles(r, "/public")
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
